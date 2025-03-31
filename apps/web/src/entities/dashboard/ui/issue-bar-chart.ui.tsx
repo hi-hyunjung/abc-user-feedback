@@ -13,7 +13,8 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-import { useTranslation } from 'react-i18next';
+import { encode } from 'js-base64';
+import { useTranslation } from 'next-i18next';
 
 import { ISSUES, Path, SimpleBarChart, useOAIQuery } from '@/shared';
 
@@ -45,14 +46,14 @@ const IssueBarChart: React.FC<IProps> = ({ projectId }) => {
       }))}
       title={t('chart.issue-status-count.title')}
       description={t('chart.issue-status-count.description')}
-      height={400}
+      height={415}
       onClick={(data) => {
         if (!data) return;
         const issue = ISSUES(t).find((v) => v.name === data.name);
         window.open(
           Path.ISSUE.replace('[projectId]', projectId.toString()) +
-            '?status=' +
-            issue?.key,
+            '?queries=' +
+            encode(JSON.stringify([{ status: issue?.key, condition: 'IS' }])),
           '_blank',
         );
       }}
